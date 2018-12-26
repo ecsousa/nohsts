@@ -34,7 +34,11 @@ namespace nohsts
                 if (context.Request.QueryString.ToString().Length <= 1)
                     throw new MessageException("Please provide URL in query string.");
 
-                var uri = new Uri(context.Request.QueryString.ToString().Substring(1));
+                var urlText = context.Request.QueryString.ToString().Substring(1);
+
+                var uri = urlText.Contains("://")
+                    ? new Uri(urlText)
+                    : new Uri($"http://{urlText}");
 
                 var ip = await Dns.GetHostEntryAsync(uri.Host);
 
